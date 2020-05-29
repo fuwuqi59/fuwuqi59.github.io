@@ -75,7 +75,6 @@ var app = new Vue({
 			if(this.loginToken != null){
 				this.loginUser = getCookie('user');
 			}
-			console.log(this.loginToken);
 
 			var self = this;
 			var xhr = new XMLHttpRequest();
@@ -103,7 +102,8 @@ var app = new Vue({
 			var self = this;
 			var data = {
 				title: document.getElementById('input-title').value,
-				body: document.getElementById('input-body').value
+				body: document.getElementById('input-body').value,
+				labels: ['test']
 			}
 			var xhr = new XMLHttpRequest();
 
