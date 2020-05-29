@@ -90,8 +90,8 @@ var app = new Vue({
 		},
 		contribute: function(){
 			var self = this;
-			if(this.loginToken == null){
-				githubLogin(function(){
+			if(self.loginToken == null){
+				githubLogin(self.clientId, function(){
 					self.openModal('contribute-modal');
 				});
 			} else {
@@ -155,7 +155,7 @@ function toggleCenteredMessage(message, bgcolor){
 	document.getElementById('centered-message').classList.toggle('show');
 }
 
-function githubLogin(callback){
+function githubLogin(clientId, callback){
 	var popupwin = window.open('https://github.com/login/oauth/authorize?client_id=' + clientId + '&redirect_uri=https%3A%2F%2Fzeit.fuwuqi59.now.sh%2Fgithub_callback&scope=user,repo','targetWindow', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=newWindowSize,height=newWindowSize');
 
 	var pollTimer = window.setInterval(function() {
