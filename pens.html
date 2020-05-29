@@ -102,24 +102,27 @@ var app = new Vue({
 			var self = this;
 			var data = {
 				title: document.getElementById('input-title').value,
-				body: document.getElementById('input-body').value,
-				labels: ['bug']
+				body: document.getElementById('input-body').value
 			}
-			var xhr = new XMLHttpRequest();
-
-			xhr.addEventListener("readystatechange", function() {
-				if(this.readyState === 4) {
-					console.log(this.responseText);
-					document.getElementById('input-title').value = "";
-					document.getElementById('input-body').value = "";
-					self.closeModal('contribute-modal');
-					fadeCenteredMessage('Your suggestion has been submitted', 'green');
+			gitPostRequest("https://api.github.com/repos/fuwuqi59/tell/issues", self.loginToken, data, function(readyState, status,responseText){
+				if(readyState === 4) {
+					console.log("Added Issues:" + status);
+					var addedItem = JSON.parse(this.responseText);
+					var data = {
+						labels: ['bug','documentation']
+					}
+					gitPostRequest("https://api.github.com/repos/fuwuqi59/tell/issues/" + addedItem.number + '/labels', self.loginToken, data, function(readyState, status,responseText){
+						if(readyState === 4) {
+							console.log("Added Issues:" + status);
+							document.getElementById('input-title').value = "";
+							document.getElementById('input-body').value = "";
+							self.closeModal('contribute-modal');
+							fadeCenteredMessage('Your suggestion has been submitted', 'green');
+						}
+					});
 				}
-			});
 
-			xhr.open("POST", "https://api.github.com/repos/fuwuqi59/tell/issues");
-			xhr.setRequestHeader("Authorization", "token " + self.loginToken);
-			xhr.send(JSON.stringify(data));
+			});
 		},
 		openModal: function(modal) {
 			document.getElementById(modal).classList.add('show')
@@ -171,6 +174,18 @@ function githubLogin(clientId, callback){
 		}
 	}, 200);
 };
+
+function gitPostRequest(url, token, data, callback){
+	var xhr = new XMLHttpRequest();
+
+	xhr.addEventListener("readystatechange", function() {
+		callback(this.readyState, this.status, this.responseText);
+	});
+
+	xhr.open("POST", url);
+	xhr.setRequestHeader("Authorization", "token " + token);
+	xhr.send(JSON.stringify(data));
+}
 
 function gitRequestPreview(url,callback){
 	var xhr = new XMLHttpRequest();
