@@ -81,7 +81,7 @@ var app = new Vue({
 
 			xhr.addEventListener("readystatechange", function() {
 				if(this.status === 200 && this.readyState === 4) {
-					self.posts = JSON.parse(responseText);
+					self.posts = JSON.parse(this.responseText);
 				}
 			});
 
@@ -107,7 +107,7 @@ var app = new Vue({
 			var xhr = new XMLHttpRequest();
 
 			xhr.addEventListener("readystatechange", function() {
-				if(this.status == 200 && this.readyState === 4) {
+				if(this.readyState === 4) {
 					document.getElementById('input-title').value = "";
 					document.getElementById('input-body').value = "";
 					self.closeModal('contribute-modal');
