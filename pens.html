@@ -107,7 +107,7 @@ var app = new Vue({
 			gitPostRequest("https://api.github.com/repos/fuwuqi59/tell/issues", self.loginToken, data, function(readyState, status,responseText){
 				if(readyState === 4) {
 					console.log("Added Issues:" + status);
-					var addedItem = JSON.parse(this.responseText);
+					var addedItem = JSON.parse(responseText);
 					var data = {
 						labels: ['bug','documentation']
 					}
