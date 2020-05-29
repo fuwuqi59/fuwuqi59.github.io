@@ -75,6 +75,7 @@ var app = new Vue({
 			if(this.loginToken != null){
 				this.loginUser = getCookie('user');
 			}
+			console.log(this.loginToken);
 
 			var self = this;
 			var xhr = new XMLHttpRequest();
@@ -108,6 +109,7 @@ var app = new Vue({
 
 			xhr.addEventListener("readystatechange", function() {
 				if(this.readyState === 4) {
+					console.log(this.responseText);
 					document.getElementById('input-title').value = "";
 					document.getElementById('input-body').value = "";
 					self.closeModal('contribute-modal');
@@ -146,7 +148,7 @@ function fadeCenteredMessage(message,bgcolor){
 	toggleCenteredMessage(message, bgcolor);
 	setTimeout(function(){
 		toggleCenteredMessage('', '');
-	}, 1500);
+	}, 5500);
 }
 function toggleCenteredMessage(message, bgcolor){
 	document.getElementById('modal-overlay').classList.toggle('show');
