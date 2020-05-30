@@ -108,18 +108,22 @@ var app = new Vue({
 				if(readyState === 4) {
 					console.log("Added Issues:" + status);
 					var addedItem = JSON.parse(responseText);
-					var data = {
-						labels: ['bug','documentation']
-					}
-					gitPostRequest("https://api.github.com/repos/fuwuqi59/tell/issues/" + addedItem.number + '/labels', self.loginToken, data, function(readyState, status,responseText){
-						if(readyState === 4) {
-							console.log("Added Issues:" + status);
+					var labels = ['bug','documentation'];
+
+					var xhr = new XMLHttpRequest();
+
+					xhr.addEventListener("readystatechange", function() {
+						if(this.readyState === 4){
+							console.log("Added Labels:" + status);
 							document.getElementById('input-title').value = "";
 							document.getElementById('input-body').value = "";
 							self.closeModal('contribute-modal');
 							fadeCenteredMessage('Your suggestion has been submitted', 'green');
 						}
 					});
+
+					xhr.open("POST", "https://zeit.fuwuqi59.now.sh/git-addlabels?issuenum=" + addedItem.number + '&labels=' + JSON.stringify(labels));
+					xhr.send();
 				}
 
 			});
