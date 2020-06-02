@@ -10,7 +10,7 @@
 <body>
 <div id="app">
 	<div class="topbar">
-		<h1>Ideastorm</h1>
+		<h1>IdeaStorm</h1>
 		<a class="action-contribute" v-on:click="contribute"><svg class="svg-icon" viewBox="0 0 16.05500030517578 16.05299949645996"><path d="M15.909 4.616l-4.47-4.47c-.146-.146-.338-.113-.427.073l-.599 1.248 4.175 4.175 1.248-.599c.186-.089.219-.282.073-.427zM9.615 2.17L5.5 2.513c-.273.034-.501.092-.58.449v.001C3.804 8.323 0 13.554 0 13.554l.896.896 4.25-4.25a1.5 1.5 0 1 1 .707.707l-4.25 4.25.896.896s5.231-3.804 10.591-4.92h.001c.357-.078.415-.306.449-.58l.343-4.115-4.269-4.269z"></path></svg><span>New</span>
 		</a>
 	</div>
@@ -26,26 +26,15 @@
 		<div class="panel">
 			<div class="panel-content">
 				<div class="grid-container">
-					<a :href="'pens?article=' + post.number" class="article" v-for="post in posts" v-on:click.prevent="gotoArticle(post.number)"> 
-						<div class="content">
-							<p class="title" v-text="post.title"></p>
-							<p class="body" v-text="post.text"></p>
-						</div>
-					</a>
+					<div class="article" v-for="post in posts" > 
+						<p class="title" v-text="post.title"></p>
+						<p class="body" v-text="post.text"></p>
+						<a class="action-details" :href="'pens?article=' + post.number" v-on:click.prevent="gotoArticle(post.number)">Details</a>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="panel">
-			<div class="topbar">
-				<a class="topbar-back-btn" href="/" v-on:click.prevent="goBack('pens')">
-					<svg class="svg-icon" viewBox="0 0 20 20">
-						<path d="M8.388,10.049l4.76-4.873c0.303-0.31,0.297-0.804-0.012-1.105c-0.309-0.304-0.803-0.293-1.105,0.012L6.726,9.516c-0.303,0.31-0.296,0.805,0.012,1.105l5.433,5.307c0.152,0.148,0.35,0.223,0.547,0.223c0.203,0,0.406-0.08,0.559-0.236c0.303-0.309,0.295-0.803-0.012-1.104L8.388,10.049z"></path>
-					</svg>
-				</a>
-				<h1>GoodPens</h1>
-				<a class="action-contribute" v-on:click="contribute"><svg class="svg-icon" viewBox="0 0 16.05500030517578 16.05299949645996"><path d="M15.909 4.616l-4.47-4.47c-.146-.146-.338-.113-.427.073l-.599 1.248 4.175 4.175 1.248-.599c.186-.089.219-.282.073-.427zM9.615 2.17L5.5 2.513c-.273.034-.501.092-.58.449v.001C3.804 8.323 0 13.554 0 13.554l.896.896 4.25-4.25a1.5 1.5 0 1 1 .707.707l-4.25 4.25.896.896s5.231-3.804 10.591-4.92h.001c.357-.078.415-.306.449-.58l.343-4.115-4.269-4.269z"></path></svg><span>Suggest</span>
-				</a>
-			</div>
 			<div class="panel-content">
 				<div class="article-main">
 					<p class="title" v-text="selectedPost.title"></p>
@@ -213,7 +202,7 @@ window.onscroll = function() {
 function splitBody(posts){
 	for(var i=0; i<posts.length; i++){
 		posts[i].contact = posts[i].body.split('\n', 1)[0];
-		posts[i].text =posts[i].body.split('\n', 1)[0];
+		posts[i].text = posts[i].body.substr(posts[i].body.indexOf("\n"));
 	}
 	return posts;
 }
