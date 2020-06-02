@@ -5,21 +5,22 @@ html, body{
 	margin: 0; padding: 0;
 	height: 100%;
 	width: 100%;
+	font-family: "Roboto", sans-serif;
 }
 body {
 	position:relative;
 	color: #777;
-	font-family: sans-serif;
 	line-height: 1.15;
+	overflow: hidden;
 }
 
 #app {
-	display:inline-block;
-	margin: 0;
-	position:relative;
+	position: relative;
 	height: 100%;
-	width: 100%;
+	text-align: center;
+	overflow: hidden;
 }
+
 #signin-success{
 	position: absolute;
 	top: 50%;
@@ -30,21 +31,52 @@ body {
 	font-weight: 700;
 }
 
-.header{
-	position:fixed;
-	left: 0;right: 0;top: 0;
-	text-align:center;
-	background: #fff;
-	color: #555;
-	z-index: 10;
+#panels {
+	height: 100%;
+	white-space: nowrap;
+	font-size: 0;
+	transition: 0.8s;
 }
-#action-contribute{
-	position:absolute;
-	top: 20px; right: 10px;
-	font-size: 1.2em;
+
+#app .panel {
+	position:relative;
+	font-size: 1rem;
+	display: inline-block;
+	white-space: normal;
+	vertical-align: top;
+	height: 100%;
+	width: 100%;
+	background: none 50% no-repeat;
+	background-size: cover;
+}
+
+.topbar{
+	display: inline-block;
+	position:relative;
+	font-size: 26px;
+	width: 100%;
+	color: black;
+	height: 80px;
+	z-index:10;
+}
+.topbar h1{
+	font-size: 1.3em;
+	margin: 0.5em auto 0;
+}
+.topbar-back-btn{
+	fill: #000;
+	width: 35px;
+	position: absolute;
+	top: 20px; left: 10px;
 	cursor:pointer;
 }
-.header .svg-icon{
+.action-contribute{
+	position:absolute;
+	top: 20px; right: 10px;
+	font-size: 1em;
+	cursor:pointer;
+}
+.topbar .svg-icon{
 	fill: #555;
 	width: 30px;
 	height: 30px;
@@ -52,16 +84,44 @@ body {
 	margin-right: 10px;
 }
 
-.main {
-	padding: 2em;
-	width: 90%;
-	max-width: 1100px;
-	margin: 100px auto 0;
+.tabs {
+	position: relative;
+	padding: 0;
+	height: 100%;
+}
+.tabs__nav-item{
+	display: inline-block;
+	color: #000;
+	font-size: 1.2em;
+	border: 2px solid #333;
+	border-radius: 20px;
+	padding: 10px 20px;
+	margin: 0 7px;
+	min-width: 200px;
+}
+.tabs__nav-item.active{
+	background: #000;
+	color: #fff;
+}
+
+#panels{
+	height: calc(100% - 80px);
+}
+
+#app .panel .panel-content{
+	margin: 0 auto;
+	width: 100%;
+	text-align: center;
+	overflow-y: auto;
+}
+.grid-container{
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 	grid-gap: 1em;
+	margin: 1em 1em 1.5em;
 }
-.article {
+
+.grid-container .article {
 	position:relative;
 	display:inline-block;
 	margin: 10px 0;
@@ -69,13 +129,17 @@ body {
 	box-shadow:
 		0 5px 10px rgba(0, 0, 0, 0.1),
 		0 20px 20px rgba(0, 0, 0, 0.05);
+	text-align: left;
+	text-decoration: none;
 }
-.article .preview{
-	width: 100%;
-	height: auto;
+.grid-container .article{
+	padding: 1em;
 }
-.article .body{
-	padding: 0 1em;
+.grid-container .article .title{
+	font-weight: 500;
+	color: #000;
+}
+.grid-container .article .body{
 	color: #333;
 }
 .meta {
@@ -102,6 +166,31 @@ body {
 }
 .article .action:hover{
 	color: #000;
+}
+
+.article-main{
+	width: 95%;
+	max-width:640px;
+    margin: 1em auto;
+	text-align: center;
+}
+.article-main img{
+	width: 100%;
+	height: auto;
+}
+.article-main .body{
+	margin: 5px auto 0;
+	text-align:left;
+}
+.article-comments{
+	width: 95%;
+	max-width:960px;
+    margin: 0.5em auto 0;
+	text-align: left;
+}
+.comment{
+	padding: 1em;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 20px 20px rgba(0, 0, 0, 0.05);
 }
 
 #modal-overlay{
@@ -183,7 +272,6 @@ form input, form textarea {
     border-radius: 3px;
 	resize: none;
 	color: #000;
-	font-family: 'Merriweather', sans-serif;
 	font-size: 1em;
 }
 form .actions{
@@ -255,7 +343,7 @@ form .actions{
 	#header{
 		font-size: 0.9em;
 	}
-	#action-contribute span{
+	.action-contribute span{
 		display:none;
 	}
 }
