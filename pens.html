@@ -3,35 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
+<link href='https://fonts.googleapis.com/css?family=Roboto:300,500,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="style.css">
 <title>GoodPens</title>
 </head>
 <body>
 <div id="app">
-	<div class="header">
-		<h1>GoodPens</h1>
-		<a id="action-contribute" v-on:click="contribute"><svg class="svg-icon" viewBox="0 0 16.05500030517578 16.05299949645996"><path d="M15.909 4.616l-4.47-4.47c-.146-.146-.338-.113-.427.073l-.599 1.248 4.175 4.175 1.248-.599c.186-.089.219-.282.073-.427zM9.615 2.17L5.5 2.513c-.273.034-.501.092-.58.449v.001C3.804 8.323 0 13.554 0 13.554l.896.896 4.25-4.25a1.5 1.5 0 1 1 .707.707l-4.25 4.25.896.896s5.231-3.804 10.591-4.92h.001c.357-.078.415-.306.449-.58l.343-4.115-4.269-4.269z"></path></svg><span>Suggest</span>
+	<div class="topbar">
+		<h1>Ideastorm</h1>
+		<a class="action-contribute" v-on:click="contribute"><svg class="svg-icon" viewBox="0 0 16.05500030517578 16.05299949645996"><path d="M15.909 4.616l-4.47-4.47c-.146-.146-.338-.113-.427.073l-.599 1.248 4.175 4.175 1.248-.599c.186-.089.219-.282.073-.427zM9.615 2.17L5.5 2.513c-.273.034-.501.092-.58.449v.001C3.804 8.323 0 13.554 0 13.554l.896.896 4.25-4.25a1.5 1.5 0 1 1 .707.707l-4.25 4.25.896.896s5.231-3.804 10.591-4.92h.001c.357-.078.415-.306.449-.58l.343-4.115-4.269-4.269z"></path></svg><span>New</span>
 		</a>
 	</div>
-	<div class="main">
-		<div class="article" v-for="post in posts"> 
-			<div class="content">
-				<img class="preview" :src="post.title + '/image/small.png'"></p>
-				<p class="body" v-text="post.body"></p>
-			</div>
+	<div class="tabs">
+		<div class="tabs__nav">
+			<a class="tabs__nav-item active">Food & Beverage</a>
+			<a class="tabs__nav-item">Dating</a>
+			<a class="tabs__nav-item">Transport</a>
+			<a class="tabs__nav-item">Travel</a>
 		</div>
 	</div>
-	<div id="pagination">
-		<div class="pagin-container">
-			<a id="pagin-prev" class="pagin">&lt;</a><span id="pagin-page" class="pagin">1</span><a id="pagin-next" class="pagin">&gt;</a>
+	<div id="panels">
+		<div class="panel">
+			<div class="panel-content">
+				<div class="grid-container">
+					<a :href="'pens?article=' + post.number" class="article" v-for="post in posts" v-on:click.prevent="gotoArticle(post.number)"> 
+						<div class="content">
+							<p class="title" v-text="post.title"></p>
+							<p class="body" v-text="post.text"></p>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="panel">
+			<div class="topbar">
+				<a class="topbar-back-btn" href="/" v-on:click.prevent="goBack('pens')">
+					<svg class="svg-icon" viewBox="0 0 20 20">
+						<path d="M8.388,10.049l4.76-4.873c0.303-0.31,0.297-0.804-0.012-1.105c-0.309-0.304-0.803-0.293-1.105,0.012L6.726,9.516c-0.303,0.31-0.296,0.805,0.012,1.105l5.433,5.307c0.152,0.148,0.35,0.223,0.547,0.223c0.203,0,0.406-0.08,0.559-0.236c0.303-0.309,0.295-0.803-0.012-1.104L8.388,10.049z"></path>
+					</svg>
+				</a>
+				<h1>GoodPens</h1>
+				<a class="action-contribute" v-on:click="contribute"><svg class="svg-icon" viewBox="0 0 16.05500030517578 16.05299949645996"><path d="M15.909 4.616l-4.47-4.47c-.146-.146-.338-.113-.427.073l-.599 1.248 4.175 4.175 1.248-.599c.186-.089.219-.282.073-.427zM9.615 2.17L5.5 2.513c-.273.034-.501.092-.58.449v.001C3.804 8.323 0 13.554 0 13.554l.896.896 4.25-4.25a1.5 1.5 0 1 1 .707.707l-4.25 4.25.896.896s5.231-3.804 10.591-4.92h.001c.357-.078.415-.306.449-.58l.343-4.115-4.269-4.269z"></path></svg><span>Suggest</span>
+				</a>
+			</div>
+			<div class="panel-content">
+				<div class="article-main">
+					<p class="title" v-text="selectedPost.title"></p>
+					<p class="body" v-text="selectedPost.body"></p>
+				</div>
+				<div class="article-comments">
+					<div class="comment">
+						abscesdsd
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="contribute-modal" class="modal">
 		<a id="close-contribute-modal" class="modal-close" v-on:click="closeModal('contribute-modal')">&times;</a>
 		<h2>Suggest a Pen</h2>
 		<form>
-			<input id="input-title" type="text" placeholder="Link to pen" />
+			<input id="input-title" type="text" placeholder="Title" />
 			<textarea id="input-body" placeholder="Description or comments" rows="10"></textarea>
+			<input id="input-contact" type="text" placeholder="Contact email or link to contact form" />
 			<div class="actions">
 				<a class="btn half" id="submit-contribute"  v-on:click="submitContribution">Submit</a>
 				<a class="btn half" id="cancel-contribute-modal" v-on:click="closeModal('contribute-modal')">Cancel</a>
@@ -62,31 +96,36 @@ var app = new Vue({
 		clientId: '5c9fb336e13cfd3fc524',
 		loginToken: null,
 		loginUser: null,  
-		posts: null
+		posts: null,
+		newPost: null,
+		selectedPostNum: null,
+		selectedPost: {title: null, body: null},
 	},
 
 	created: function () {
-		this.initData();
+		this.loginToken = getCookie('token');
+		if(this.loginToken != null){
+			this.loginUser = getCookie('user');
+		}
+
+		this.selectedPostNum = getUrlParameter('article');
+		if(this.selectedPostNum != ''){
+			this.gotoArticle(this.selectedPostNum);
+		} else {
+			this.page_no = parseInt(getUrlParameter('page'));
+			this.loadData();
+		}
 	},
 
 	methods: {
-		initData: function () {
-			this.loginToken = getCookie('token');
-			if(this.loginToken != null){
-				this.loginUser = getCookie('user');
-			}
-
+		loadData: function (callback) {
 			var self = this;
-			var xhr = new XMLHttpRequest();
-
-			xhr.addEventListener("readystatechange", function() {
-				if(this.status === 200 && this.readyState === 4) {
-					self.posts = JSON.parse(this.responseText);
+			gitGetRequest('https://api.github.com/repos/fuwuqi59/testjson/issues?page=1&per_page=100', function(readyState, status,responseText){
+				if(status === 200 && readyState === 4) {
+					var jsonResp = JSON.parse(responseText);
+					self.posts = splitBody(jsonResp);
 				}
 			});
-
-			xhr.open("GET", 'https://api.github.com/repos/fuwuqi59/tell/issues?page=1&per_page=100');
-			xhr.send();
 		},
 		contribute: function(){
 			var self = this;
@@ -98,13 +137,34 @@ var app = new Vue({
 				self.openModal('contribute-modal');
 			}
 		},
+		gotoArticle: function(number){
+			var self = this;
+			gitGetRequest('https://api.github.com/repos/fuwuqi59/testjson/issues/' + number, function(readyState, status,responseText){
+				if(status === 200 && readyState === 4) {
+					self.selectedPost = JSON.parse(responseText);
+					document.getElementById('panels').style.transform = 'translateX(-100%)';
+					history.pushState(null, null, "?article=" + number);
+				}
+			});
+		},
+		goBack: function(panel){
+			if(this.posts == null){
+				this.loadData(function(){
+					document.getElementById('panels').style.transform = 'translateX(0)';
+					history.replaceState(null, null, "pens.html");
+				})
+			} else {
+				document.getElementById('panels').style.transform = 'translateX(0)';
+				history.replaceState(null, null, "pens.html");
+			}
+		},
 		submitContribution: function (){
 			var self = this;
 			var data = {
 				title: document.getElementById('input-title').value,
-				body: document.getElementById('input-body').value
+				body: document.getElementById('input-contact').value + '\n' + document.getElementById('input-body').value
 			}
-			gitPostRequest("https://api.github.com/repos/fuwuqi59/tell/issues", self.loginToken, data, function(readyState, status,responseText){
+			gitPostRequest("https://api.github.com/repos/fuwuqi59/testjson/issues", self.loginToken, data, function(readyState, status,responseText){
 				if(readyState === 4) {
 					console.log("Added Issues:" + status);
 					var addedItem = JSON.parse(responseText);
@@ -150,7 +210,13 @@ window.onscroll = function() {
 	document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
 };
 
-
+function splitBody(posts){
+	for(var i=0; i<posts.length; i++){
+		posts[i].contact = posts[i].body.split('\n', 1)[0];
+		posts[i].text =posts[i].body.split('\n', 1)[0];
+	}
+	return posts;
+}
 function fadeCenteredMessage(message,bgcolor){
 	toggleCenteredMessage(message, bgcolor);
 	setTimeout(function(){
@@ -178,6 +244,17 @@ function githubLogin(clientId, callback){
 		}
 	}, 200);
 };
+
+function gitGetRequest(url, callback){
+	var xhr = new XMLHttpRequest();
+
+	xhr.addEventListener("readystatechange", function() {
+		callback(this.readyState, this.status, this.responseText);
+	});
+
+	xhr.open("GET", url);
+	xhr.send();
+}
 
 function gitPostRequest(url, token, data, callback){
 	var xhr = new XMLHttpRequest();
@@ -224,6 +301,12 @@ function getCookie(name) {
 }
 function eraseCookie(name) {   
     document.cookie = name+'=; Max-Age=-99999999;';
+}
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 </script>
 </body>
