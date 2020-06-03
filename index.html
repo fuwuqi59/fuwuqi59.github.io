@@ -63,7 +63,7 @@ var app = new Vue({
 		clientId: '5c9fb336e13cfd3fc524',
 		loginToken: null,
 		loginUser: null,  
-		posts: null,
+		posts: [],
 		newPost: null,
 		selectedPostNum: null,
 		selectedPost: {title: null, body: null},
@@ -92,6 +92,7 @@ var app = new Vue({
 			gitGetRequest('https://api.github.com/repos/fuwuqi59/testtitle/issues?page=1&per_page=100', function(readyState, status,responseText){
 				if(status === 200 && readyState === 4) {
 					var jsonResp = JSON.parse(responseText);
+					console.log(jsonResp);
 					self.posts = splitTitleBody(jsonResp);
 				}
 			});
