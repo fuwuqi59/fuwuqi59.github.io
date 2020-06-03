@@ -171,7 +171,7 @@ body{
 	opacity: 1;
 }
 
-.wrapper{
+#app{
 	width:750px;
 	max-width: 90%;
 	margin: 0 auto;
