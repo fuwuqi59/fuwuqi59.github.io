@@ -21,7 +21,7 @@
 		<a href="/others">Other queries</a>
 	</div>
 </div>
-<div class="wrapper">
+<div id="app" class="wrapper">
 	<div class="main_header">
 		<div class="logo">
 			<h1>Remote<span>Jobs</span></h1>
@@ -43,6 +43,7 @@
 							<span class="job_title"  v-text="post.job_title"></span>
 							<span class="job_info"><span v-text="post.company_name"></span><span>&bull;</span><span v-text="post.salary_range"></span><span>&bull;</span><span v-text="post.created_at"></span></span>
 						</div>
+						<span class="job_type full_time">Full-Time</span>
 					</a>
 				</div>
 				<div class="load_more">
