@@ -43,7 +43,6 @@
 							<span class="job_title"  v-text="post.job_title"></span>
 							<span class="job_info"><span v-text="post.company_name"></span><span>&bull;</span><span v-text="post.salary_range"></span><span>&bull;</span><span v-text="post.created_at"></span></span>
 						</div>
-						<span class="job_type full_time">Full-Time</span>
 					</a>
 				</div>
 				<div class="load_more">
@@ -64,7 +63,6 @@ var app = new Vue({
 		loginToken: null,
 		loginUser: null,  
 		posts: [],
-		newPost: null,
 		selectedPostNum: null,
 		selectedPost: {title: null, body: null},
 	},
