@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RemoteJobs</title>
+<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
+<link href='style.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<html>
+<head>
+<title>Job Board | McKenzieChild</title>
+
+</head>
+<body>
+<div class="border"></div>
+<div id="menuToggle">
+	<input type="checkbox" />
+	<span></span>
+	<span></span>
+	<span></span>
+	<div id="menu">
+		<a href="/postajob" v-onclick="openPostAJobWindow()">Post a job ad</a>
+		<a href="/postajob?type=hire-me">Post a 'Hire me for remote job' ad</a>
+		<a href="/advertise">Advertise here</a>
+		<a href="/others">Other queries</a>
+	</div>
+</div>
+<div class="wrapper">
+	<div class="main_header">
+		<div class="logo">
+			<h1>Remote<span>Jobs</span></h1>
+		</div>
+		<div class="nav">
+			<a href="#" class="current">All Jobs</a>
+			<a href="#">Full-time</a>
+			<a href="#">Part-time</a>
+			<a href="#">Freelance</a>
+			<a href="#">Contract</a>
+		</div>
+	</div>
+	<div class="panels">
+		<div class="panel">
+			<div class="panel-content">
+				<div id="listing">
+					<a class="list-item" v-for="post in posts">
+						<div class="info">
+							<span class="job_title"  v-text="post.job_title"></span>
+							<span class="job_info"><span v-text="post.company_name"></span><span>&bull;</span><span v-text="post.salary_range"></span><span>&bull;</span><span v-text="post.created_at"></span></span>
+						</div>
+						<span class="job_type full_time">Full-Time</span>
+					</a>
+				</div>
+				<div class="load_more">
+					<button class="button"> Load More </button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+var app = new Vue({
+	el: '#app',
+	data: {
+		page_no: 1, 
+		max_per_page: 100,
+		clientId: '5c9fb336e13cfd3fc524',
+		loginToken: null,
+		loginUser: null,  
+		posts: null,
+		newPost: null,
+		selectedPostNum: null,
+		selectedPost: {title: null, body: null},
+	},
+
+	created: function () {
+		this.loginToken = getCookie('token');
+		if(this.loginToken != null){
+			this.loginUser = getCookie('user');
+		}
+
+		this.selectedPostNum = getUrlParameter('article');
+		if(this.selectedPostNum != ''){
+			this.gotoArticle(this.selectedPostNum);
+		} else {
+			if(getUrlParameter('page')){
+				this.page_no = parseInt(getUrlParameter('page'));
+			}
+			this.loadData();
+		}
+	},
+
+	methods: {
+		loadData: function (callback) {
+			var self = this;
+			gitGetRequest('https://api.github.com/repos/fuwuqi59/testtitle/issues?page=1&per_page=100', function(readyState, status,responseText){
+				if(status === 200 && readyState === 4) {
+					var jsonResp = JSON.parse(responseText);
+					self.posts = splitTitle(jsonResp);
+				}
+			});
+		},
+		gotoArticle: function(number){
+			var self = this;
+			gitGetRequest('https://api.github.com/repos/fuwuqi59/testtitle/issues/' + number, function(readyState, status,responseText){
+				if(status === 200 && readyState === 4) {
+					self.selectedPost = JSON.parse(responseText);
+					document.getElementById('panels').style.transform = 'translateX(-100%)';
+					history.pushState(null, null, "?article=" + number);
+				}
+			});
+		},
+		goBack: function(panel){
+			if(this.posts == null){
+				this.loadData(function(){
+					document.getElementById('panels').style.transform = 'translateX(0)';
+					history.replaceState(null, null, "pens.html");
+				})
+			} else {
+				document.getElementById('panels').style.transform = 'translateX(0)';
+				history.replaceState(null, null, "pens.html");
+			}
+		},
+		openPostAJobWindow: function(postType){
+			var self = this;
+			if(self.loginToken == null){
+				githubLogin(self.clientId, function(){
+					window.open('/postajob','_blank');
+				});
+			} else {
+				window.open('/postajob','_blank');
+			}
+		},
+		openModal: function(modal) {
+			document.getElementById(modal).classList.add('show')
+			const scrollY = document.documentElement.style.getPropertyValue('--scroll-y');
+			const body = document.body;
+			body.style.position = 'fixed';
+			body.style.top = `-${scrollY}`;
+		},
+		closeModal: function(modal){
+			const body = document.body;
+			const scrollY = body.style.top;
+			body.style.position = '';
+			body.style.top = '';
+			window.scrollTo(0, parseInt(scrollY || '0') * -1);
+			document.getElementById(modal).classList.remove('show');
+		}
+	}
+});
+
+window.onscroll = function() {
+	document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
+};
+
+function splitTitleBody(posts){
+	for(var i=0; i<posts.length; i++){
+		var splitTitle = posts[i].title.split('¶')
+		posts[i].job_title = splitTitle[0];
+		posts[i].salary_range = splitTitle[1];
+		posts[i].company_name = splitTitle[2];
+
+		posts[i].contact = posts[i].body.split('\n', 1)[0];
+		posts[i].job_description = posts[i].body.substr(posts[i].body.indexOf("\n"));
+	}
+	return posts;
+}
+function fadeCenteredMessage(message,bgcolor){
+	toggleCenteredMessage(message, bgcolor);
+	setTimeout(function(){
+		toggleCenteredMessage('', '');
+	}, 5500);
+}
+function toggleCenteredMessage(message, bgcolor){
+	document.getElementById('modal-overlay').classList.toggle('show');
+	document.getElementById('centered-message').innerText = message;
+	document.getElementById('centered-message').style.background = bgcolor;
+	document.getElementById('centered-message').classList.toggle('show');
+}
+
+function githubLogin(clientId, callback){
+	var popupwin = window.open('https://github.com/login/oauth/authorize?client_id=' + clientId + '&redirect_uri=https%3A%2F%2Fzeit.fuwuqi59.now.sh%2Fgithub_callback&scope=user,repo','targetWindow', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=newWindowSize,height=newWindowSize');
+
+	var pollTimer = window.setInterval(function() {
+    	if (popupwin.closed !== false) {
+        	window.clearInterval(pollTimer);
+			loginToken = getCookie('token');
+			if(loginToken != null){
+				loginUser = getCookie('user');
+				callback();
+			}
+		}
+	}, 200);
+};
+
+function gitGetRequest(url, callback){
+	var xhr = new XMLHttpRequest();
+
+	xhr.addEventListener("readystatechange", function() {
+		callback(this.readyState, this.status, this.responseText);
+	});
+
+	xhr.open("GET", url);
+	xhr.send();
+}
+
+function gitPostRequest(url, token, data, callback){
+	var xhr = new XMLHttpRequest();
+
+	xhr.addEventListener("readystatechange", function() {
+		callback(this.readyState, this.status, this.responseText);
+	});
+
+	xhr.open("POST", url);
+	xhr.setRequestHeader("Authorization", "token " + token);
+	xhr.send(JSON.stringify(data));
+}
+
+function gitRequestPreview(url,callback){
+	var xhr = new XMLHttpRequest();
+
+	xhr.addEventListener("readystatechange", function() {
+		callback(this.readyState, this.status, this.responseText);
+	});
+
+	xhr.open("GET", url);
+	xhr.setRequestHeader("Accept", "application/vnd.github.squirrel-girl-preview");
+	xhr.send();
+}
+
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999;';
+}
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
+String.prototype.trimEllip = function (length) {
+	return this.length > length ? this.substring(0, length) + "..." : this;
+}
+function isEmail(email) {
+    const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return re.test(String(email).toLowerCase());
+}
+</script>
+</body>
+</html>
+</body>
+</html>
