@@ -123,6 +123,192 @@ function closeModal(modal){
 window.onscroll = function() {
   document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
 };
+
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999;';
+}
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RemoteJobs</title>
+<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
+<link href='style.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div class="border"></div>
+<div class="submit_header">
+	<div class="logo">
+		<h1>Remote<span>Jobs</span></h1>
+		<h2>Post A Job Ad</h2>
+	</div>
+</div>
+<form id="submit-form" class="submit-form">
+	<div class="field">
+		<label class="field-label" for="name"><span>Job Title <span class="required-star">*</span></span></label>
+		<input class="form-input" type="text" id="job-title" name="job-title">
+	</div>
+	<div class="field">
+		<label class="field-label" for="job-description"><span>Job Description</span></label>
+		<textarea class="form-input" id="job-description" name="job-description" rows="10" cols="50" maxlength="65535" oninput="countCharacters(this)"></textarea>
+		<span id="char-counter"><span id="char-count"></span> / 65535</span>
+	</div>
+	<div class="field">
+		<label class="field-label" for="employment-type"><span>Employment Type <span class="required-star">*</span></span></label>
+		<select class="form-input" name="employment-type" id="employment-type" required>
+			<option value="full-time">Full-time</option>
+			<option value="part-time">Part-time</option>
+			<option value="freelance">Freelance</option>
+			<option value="contract">Contract</option>
+		</select>
+	</div>
+	<div class="field">
+		<label class="field-label" for="application-link"><span>Application Link / Email <span class="required-star">*</span></span></label>
+		<input class="form-input" type="text" id="application-link" name="application-link">
+	</div>
+	<div class="field">
+		<label class="field-label" for="salary-range"><span>Salary Range</span></label>
+		<input class="form-input" type="text" id="salary-range" name="salary-range">
+	</div>
+	<div class="field">
+		<label class="field-label" for="company-name"><span>Company Name <span class="required-star">*</span></span></label>
+		<input class="form-input" type="text" id="company-name" name="company-name">
+	</div>
+	<div class="field">
+		<input id="submit-btn" class="button full-btn" type="submit" />
+	</div>
+</form>
+<div id="modal-overlay">
+</div>
+<div id="submitted-modal" class="modal">
+	<h2>Your Job Ad Has Been Submitted</h2>
+	<a class="button full-btn">Return Home</a><a class="button full-btn">Create Another</a>
+</div>
+<script>
+var loginUser, loginToken = getCookie('token');
+if(loginToken != null){
+	loginUser = getCookie('user');
+}
+
+document.getElementById('submit-form').onsubmit = function(evt){
+	evt.preventDefault();
+	
+	var emailOrURL = document.getElementById('input-contact').value;
+	if(isEmail(emailOrURL)){
+		emailOrURL = 'mailto:' + emailOrURL
+	}
+
+	var data = {
+		title: document.getElementById('job-title').value  + '¶' + document.getElementById('salary-range').value  + '¶' + document.getElementById('company-name').value,
+		body: emailOrURL + '\n' + document.getElementById('job-description').value
+	}
+	var xhr = new XMLHttpRequest();
+
+	xhr.addEventListener("readystatechange", function() {
+		if(this.readyState === 4) {
+			console.log("Added Issues:" + status);
+			var addedItem = JSON.parse(responseText);
+			var labels = [document.getElementById('employment-type').value];
+			var xhr = new XMLHttpRequest();
+
+			xhr.addEventListener("readystatechange", function() {
+				if(this.readyState === 4){
+					console.log("Added Labels:" + status);
+					//document.getElementById('input-title').value = "";
+					//document.getElementById('input-body').value = "";
+					//fadeCenteredMessage('Your suggestion has been submitted', 'green');
+				}
+			});
+
+			xhr.open("POST", "https://zeit.fuwuqi59.now.sh/git-addlabels?issuenum=" + addedItem.number + '&labels=' + JSON.stringify(labels));
+			xhr.send();
+		}
+	});
+
+	xhr.open("POST", "https://api.github.com/repos/fuwuqi59/testtitle/issues");
+	xhr.setRequestHeader("Authorization", "token " + loginToken);
+	xhr.send(JSON.stringify(data));
+}
+
+function countCharacters(el){
+	document.getElementById("char-count").innerHTML = el.value.length;
+}
+function showModal(modal) {
+	document.getElementById(modal).classList.add('show')
+	const scrollY = document.documentElement.style.getPropertyValue('--scroll-y');
+	const body = document.body;
+	body.style.position = 'fixed';
+	body.style.top = `-${scrollY}`;
+};
+function closeModal(modal){
+	const body = document.body;
+	const scrollY = body.style.top;
+	body.style.position = '';
+	body.style.top = '';
+	window.scrollTo(0, parseInt(scrollY || '0') * -1);
+	document.getElementById(modal).classList.remove('show');
+}
+window.onscroll = function() {
+  document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
+};
+
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999;';
+}
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
 </script>
 </body>
 </html>
