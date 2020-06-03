@@ -9,22 +9,22 @@
 </head>
 <body>
 <div class="border"></div>
-<div id="menuToggle">
-	<input type="checkbox" />
-	<span></span>
-	<span></span>
-	<span></span>
-	<div id="menu">
-		<a href="/postajob" v-onclick="openPostAJobWindow()">Post a job ad</a>
-		<a href="/postajob?type=hire-me">Post a 'Hire me for remote job' ad</a>
-		<a href="/advertise">Advertise here</a>
-		<a href="/others">Other queries</a>
+<div id="app">
+	<div id="menuToggle">
+		<input type="checkbox" />
+		<span></span>
+		<span></span>
+		<span></span>
+		<div id="menu">
+			<a href="/postajob" v-onclick="openPostAJobWindow()">Post a job ad</a>
+			<a href="/postajob?type=hire-me">Post a 'Hire me for remote job' ad</a>
+			<a href="/advertise">Advertise here</a>
+			<a href="/others">Other queries</a>
+		</div>
 	</div>
-</div>
-<div id="app" class="wrapper">
 	<div class="main_header">
 		<div class="logo">
-			<h1>Remote<span>Jobs</span></h1>
+		<h1>Remote<span>Jobs</span></h1>
 		</div>
 		<div class="nav">
 			<a href="#" class="current">All Jobs</a>
