@@ -73,14 +73,14 @@ document.getElementById('submit-form').onsubmit = function(evt){
 
 	xhr.addEventListener("readystatechange", function() {
 		if(this.readyState === 4) {
-			console.log("Added Issues:" + status);
-			var addedItem = JSON.parse(responseText);
+			console.log("Added Issues:" + this.status);
+			var addedItem = JSON.parse(this.responseText);
 			var labels = [document.getElementById('employment-type').value];
 			var xhr = new XMLHttpRequest();
 
 			xhr.addEventListener("readystatechange", function() {
 				if(this.readyState === 4){
-					console.log("Added Labels:" + status);
+					console.log("Added Labels:" + this.status);
 					//document.getElementById('input-title').value = "";
 					//document.getElementById('input-body').value = "";
 					//fadeCenteredMessage('Your suggestion has been submitted', 'green');
