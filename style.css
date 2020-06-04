@@ -274,10 +274,13 @@ body{
 .job_info{
 	color:#74718f;
 	display: block;
-
+	font-size: 1.2em;
 }
 .job_info span{
 	margin: 0 .75em;
+}
+.job_info span:first-child{
+	margin: 0 .75em 0 0;
 }
 .job_type{
 	text-transform: uppercase;
@@ -365,6 +368,7 @@ body{
 }
 
 .field {
+	position:relative;
 	padding: 0.3em;
 }
 .field-label {
@@ -402,6 +406,7 @@ body{
 }
 
 .form-input {
+	position:relative;
 	display: block;
 	width: 100%;
 	padding: 9px 10px;
@@ -421,6 +426,22 @@ body{
 	text-align:right;
 	font-size: 0.9em;
 	margin-top: 5px;
+}
+#salary-range{
+	padding: 9px 70px 9px 40px;
+}
+.supp-labels{
+	position: absolute;
+	font-size: 1em;
+	color: #333;
+}
+#supp-usd{
+	left: 13px;
+	bottom: 18px;
+}
+#supp-month{
+	right: 10px;
+	bottom: 18px;
 }
 
 #modal-overlay{
